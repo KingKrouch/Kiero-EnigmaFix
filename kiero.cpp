@@ -268,11 +268,17 @@ kiero::Status::Enum kiero::init(RenderType::Enum _renderType)
 					return Status::ModuleNotFoundError;
 				}
 
-				void* D3D11CreateDeviceAndSwapChain;
-				
+				// Declare the function pointer type
 				typedef HRESULT(WINAPI* PFN_D3D11CreateDeviceAndSwapChain)(void);
-				D3D11CreateDeviceAndSwapChain = reinterpret_cast<PFN_D3D11CreateDeviceAndSwapChain>(::GetProcAddress(libD3D11, "D3D11CreateDeviceAndSwapChain"));
-				if (D3D11CreateDeviceAndSwapChain == NULL)
+
+				// Load the function pointer
+				PFN_D3D11CreateDeviceAndSwapChain D3D11CreateDeviceAndSwapChain =
+					reinterpret_cast<PFN_D3D11CreateDeviceAndSwapChain>(
+						::GetProcAddress(libD3D11, "D3D11CreateDeviceAndSwapChain")
+						);
+
+				// Check if the function pointer is valid
+				if (D3D11CreateDeviceAndSwapChain == nullptr)
 				{
 					::DestroyWindow(window);
 					::UnregisterClass(windowClass.lpszClassName, windowClass.hInstance);
